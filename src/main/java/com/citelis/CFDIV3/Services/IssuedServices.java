@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 
@@ -23,17 +24,20 @@ public class IssuedServices {
 
     public Page<IssuedResource> getAllIssued(String company_group, String id, String cfditype, Timestamp datestart, Timestamp dateend, Integer pageNo, Integer pageSize)
     {
+        Page<IssuedModel> issuedModel;
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         BooleanBuilder builder = new BooleanBuilder();
         QIssuedModel qIssuedModel = QIssuedModel.issuedModel;
 
+
         if (!company_group.isEmpty()) {
             builder.and(qIssuedModel.companygroup.eq(company_group));
         }
-        if (!id.isEmpty()) {
+
+        if (id != null && !id.isEmpty() ) {
             builder.and(qIssuedModel.company.eq(id));
         }
-        if(!cfditype.isEmpty()){
+        if(cfditype != null && !cfditype.isEmpty()){
             builder.and(qIssuedModel.cfditype.eq(cfditype));
         }
         if(datestart != null && dateend != null){
